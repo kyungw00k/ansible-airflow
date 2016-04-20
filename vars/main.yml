@@ -1,0 +1,8 @@
+---
+download_dest: /tmp
+
+python_target_version: 2.7
+python: python{{python_target_version}}
+pip: pip{{python_target_version}}
+
+airflow_extra_packages:

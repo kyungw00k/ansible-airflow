@@ -1,0 +1,26 @@
+---
+- include: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version | int}}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: Install Airflow
+  command: sudo env "PATH=$PATH" {{ pip }} install airflow
+
+- name: Install Airflow Extra Packages
+  command: sudo env "PATH=$PATH" {{ pip }} install airflow[{{ item }}]
+  with_items: '{{airflow_extra_packages}}'
+  when: airflow_extra_packages is defined
+
+- name: Creates Airflow Home Directory 
+  file: path={{ airflow_home }} state=directory
+
+# Configuration
+- name: Overwrite configuration
+  template: src=airflow.cfg.j2 dest={{ airflow_home }}/airflow.cfg
+
+# - name: Setting up a Backend
+#   shell : >-
+#     export AIRFLOW_HOME={{ airflow_home }}
+#     && airflow initdb

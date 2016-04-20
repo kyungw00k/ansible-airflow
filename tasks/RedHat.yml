@@ -1,0 +1,16 @@
+---
+- include_vars: "RedHat.yml"
+
+- name : Install Development Tools
+  package : name={{ item }} state=latest
+  with_items:
+    - "@development"
+    - gcc
+    - gcc-c++
+    - libselinux-python
+  become: yes
+
+- name : Install Extra Libraries
+  package : name={{ item }} state=latest
+  with_items: '{{ package_python_extras }}'
+  become: yes
